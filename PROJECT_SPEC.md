@@ -1,529 +1,277 @@
-# مواصفات نظام نقاط البيع (POS) - البقالة
+## 🧾 Project Title
+**Offline-First Grocery POS (React Native Android Tablet)**
 
-## جدول المحتويات
-1. [نظرة عامة](#نظرة-عامة)
-2. [المتطلبات الوظيفية](#المتطلبات-الوظيفية)
-3. [المتطلبات غير الوظيفية](#المتطلبات-غير-الوظيفية)
-4. [هيكل المشروع](#هيكل-المشروع)
-5. [قاعدة البيانات](#قاعدة-البيانات)
-6. [واجهات API](#واجهات-api)
-7. [واجهات المستخدم](#واجهات-المستخدم)
-8. [استراتيجية المزامنة](#استراتيجية-المزامنة)
-9. [الأمان](#الأمان)
-10. [الاختبار](#الاختبار)
-11. [النشر والتوزيع](#النشر-والتوزيع)
+---
 
-## نظرة عامة
+## 🧭 Purpose
+This application is a complete **Point of Sale (POS)** system for small grocery shops.  
+It must work **fully offline** and synchronize data with a remote server whenever internet access is available.
 
-نظام نقاط بيع متكامل مصمم خصيصاً لتجار الجملة والتجزئة (بقالة) يعمل بنظام **Offline-first**، يدعم العمل الكامل بدون اتصال مع مزامنة تلقائية عند توفر الشبكة.
+---
 
-### المميزات الرئيسية
-- ✅ عمل كامل بدون اتصال إنترنت
-- ✅ واجهة مستخدم عربية (RTL)
-- ✅ إدارة مخزون متقدمة
-- ✅ فواتير مبيعات ومرتجعات
-- ✅ دعم الباركود والطابعات الحرارية
-- ✅ تقارير وأداء متجر
-- ✅ مستخدمين متعددين بصلاحيات
-- ✅ مزامنة مع خادم مركزي
+## 🧩 Functional Requirements
 
-## المتطلبات الوظيفية
+### 1. User Authentication
+- Local user login (no need for internet).
+- Secure password storage using device keystore.
+- Role-based access: Admin, Cashier, Viewer.
 
-### 1. إدارة المنتجات
-- إضافة/تعديل/حذف المنتجات
-- تصنيفات المنتجات (أطعمة، مشروبات، الخ)
-- وحدات قياس متعددة (قطعة، كيلو، لتر)
-- إدارة الأسعار والتكلفة
-- حدود التنبيه للمخزون
-- رموز الباركود (دعم ماسح الكاميرا والماسح الخارجي)
+### 2. Product Management
+- Local product list (synced from backend).
+- Fields: name, SKU/barcode, unit, price, stock quantity.
+- Ability to scan product barcodes via camera or Bluetooth HID scanner.
 
-### 2. نقاط البيع (POS)
-- واجهة بيع سريعة
-- بحث سريع بالاسم/الباركود
-- إضافة عناصر متعددة الكميات
-- تطبيق خصومات (نسبة، مبلغ ثابت)
-- إضافة ضريبة القيمة المضافة
-- طرق دفع متعددة (نقدي، بطاقة، محفظة)
-- طباعة إيصالات حرارية
-- حفظ الفواتير مؤقتاً
+### 3. Sales (POS Screen)
+- Add multiple items to a cart.
+- Adjust quantity and auto-calculate subtotal, tax, discount, total.
+- Process payments: cash, card, or mixed.
+- Save sale locally even if offline.
 
-### 3. إدارة المخزون
-- حركة المخزون (دخول، خروج، تعديل)
-- جرد المخزون
-- تقارير نفاذ المنتجات
-- سجل الحركات
+### 4. Invoice Printing
+- Print simple receipt via Bluetooth ESC/POS printer (text format).
+- Include store name, date/time, itemized list, total, and thank-you message.
 
-### 4. التقارير
-- تقرير المبيعات اليومية
-- تقرير الإيرادات
-- تقرير أفضل المنتجات مبيعاً
-- تقرير حركة المخزون
-- تقرير أداء الموظفين
+### 5. Data Synchronization
+- Background sync job (every X minutes or manual trigger).
+- Sync rules:
+  - Push unsynced sales to server.
+  - Pull updated products and prices.
+  - Conflict resolution: **last-write-wins** with `updated_at` timestamps.
 
-### 5. إدارة المستخدمين
-- مستويات الصلاحيات (مدير، مشرف، كاشير)
-- تسجيل الدخول/الخروج
-- سجل الأنشطة
+### 6. Reports
+- Daily and weekly sales summaries.
+- Filter by date or cashier.
+- Show total revenue and number of transactions.
 
-### 6. المزامنة
-- مزامنة تلقائية عند توفر الشبكة
-- حل التعارضات (Last Write Wins)
-- سجل المزامنة
-- إعادة المزامنة اليدوية
+### 7. Multi-language Support
+- Arabic (RTL) and English (LTR).
+- Language toggle stored in local preferences.
 
-## المتطلبات غير الوظيفية
+---
 
-### الأداء
-- وقت استجابة واجهة المستخدم < 200ms
-- تحميل أولي للتطبيق < 3 ثواني
-- دعم حتى 10,000 منتج محلياً
+## 🧱 Database Schema
 
-### الموثوقية
-- عمل مستمر حتى مع انقطاع الشبكة
-- نسخ احتياطي تلقائي للبيانات
-- استعادة البيانات بعد الأعطال
+### Table: `users`
+| Field | Type | Description |
+|--------|------|-------------|
+| id | integer | Primary key |
+| username | text | Unique |
+| password_hash | text | Hashed password |
+| role | text | e.g. "admin", "cashier" |
 
-### الأمان
-- تشفير البيانات الحساسة محلياً
-- اتصال آمن مع الخادم (HTTPS)
-- مصادقة المستخدمين
-- سجل audit للعمليات الحساسة
+### Table: `products`
+| Field | Type | Description |
+|--------|------|-------------|
+| id | integer | Primary key |
+| name | text | Product name |
+| sku | text | Barcode or code |
+| price | real | Unit price |
+| stock_qty | real | Available stock |
+| updated_at | timestamp | Last sync time |
 
-### التوافق
-- أندرويد 8.0+ (API 26+)
-- شاشات 10 بوصة فما فوق
-- دعم الاتصال بالطابعات الحرارية عبر Bluetooth
-- دعم ماسحات الباركود (كاميرا، HID Bluetooth)
+### Table: `sales`
+| Field | Type | Description |
+|--------|------|-------------|
+| id | integer | Primary key |
+| user_id | integer | Linked to users |
+| total_amount | real | Sale total |
+| payment_type | text | "cash", "card" |
+| created_at | timestamp | Local timestamp |
+| synced | boolean | True if uploaded |
 
-## هيكل المشروع
+### Table: `sale_items`
+| Field | Type | Description |
+|--------|------|-------------|
+| id | integer | Primary key |
+| sale_id | integer | Linked to sales |
+| product_id | integer | Linked to products |
+| qty | real | Quantity sold |
+| price | real | Unit price |
 
-```
+### Table: `device_sync_logs`
+| Field | Type | Description |
+|--------|------|-------------|
+| id | integer | Primary key |
+| last_sync_at | timestamp | Last successful sync |
+| status | text | "success" / "error" |
+| message | text | Details if failed |
 
-grocery-pos/
-├──app/                          # تطبيق الموبايل
-│├── src/
-││   ├── components/          # مكونات قابلة لإعادة الاستخدام
-││   ├── screens/             # شاشات التطبيق
-││   ├── navigation/          # التنقل بين الشاشات
-││   ├── services/            # الخدمات (قاعدة بيانات، مزامنة، طباعة)
-││   ├── store/               # إدارة الحالة (Zustand/Redux)
-││   ├── utils/               # أدوات مساعدة
-││   └── constants/           # الثوابت
-│├── assets/
-││   ├── images/
-││   ├── fonts/               # خطوط عربية
-││   └── icons/
-│└── tests/
-├──server/                      # خدمة المزامنة (اختياري)
-│├── src/
-││   ├── controllers/
-││   ├── models/
-││   ├── routes/
-││   └── sync/
-│└── tests/
-├──docs/                        # الوثائق
-├──ci/                         # إعدادات CI/CD
-└──scripts/                    # سكريبتات المساعدة
+---
 
-```
+## 🔌 API Endpoints (for backend mock)
 
-## قاعدة البيانات
-
-### الجداول المحلية (SQLite)
-
-#### products
-```sql
-CREATE TABLE products (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    barcode TEXT UNIQUE,
-    name_ar TEXT NOT NULL,
-    name_en TEXT,
-    category_id INTEGER,
-    unit TEXT DEFAULT 'pcs', -- pcs, kg, liter
-    price REAL NOT NULL,
-    cost REAL,
-    stock_quantity REAL DEFAULT 0,
-    min_stock_level REAL DEFAULT 0,
-    is_active BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    sync_status TEXT DEFAULT 'synced' -- synced, pending, error
-);
-```
-
-categories
-
-```sql
-CREATE TABLE categories (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    name_ar TEXT NOT NULL,
-    name_en TEXT,
-    parent_id INTEGER,
-    is_active BOOLEAN DEFAULT 1
-);
-```
-
-sales
-
-```sql
-CREATE TABLE sales (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    receipt_number TEXT UNIQUE,
-    total_amount REAL NOT NULL,
-    discount_amount REAL DEFAULT 0,
-    tax_amount REAL DEFAULT 0,
-    final_amount REAL NOT NULL,
-    payment_method TEXT DEFAULT 'cash', -- cash, card, wallet
-    payment_status TEXT DEFAULT 'paid', -- paid, pending, refunded
-    customer_id INTEGER,
-    user_id INTEGER NOT NULL,
-    device_id TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    sync_status TEXT DEFAULT 'pending'
-);
-```
-
-sale_items
-
-```sql
-CREATE TABLE sale_items (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    sale_id INTEGER NOT NULL,
-    product_id INTEGER NOT NULL,
-    quantity REAL NOT NULL,
-    unit_price REAL NOT NULL,
-    total_price REAL NOT NULL,
-    discount_amount REAL DEFAULT 0
-);
-```
-
-stock_movements
-
-```sql
-CREATE TABLE stock_movements (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    product_id INTEGER NOT NULL,
-    movement_type TEXT NOT NULL, -- in, out, adjustment
-    quantity REAL NOT NULL,
-    reference_type TEXT, -- sale, purchase, adjustment
-    reference_id INTEGER,
-    notes TEXT,
-    user_id INTEGER,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-users
-
-```sql
-CREATE TABLE users (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    username TEXT UNIQUE NOT NULL,
-    password_hash TEXT NOT NULL,
-    name_ar TEXT NOT NULL,
-    name_en TEXT,
-    role TEXT DEFAULT 'cashier', -- admin, supervisor, cashier
-    is_active BOOLEAN DEFAULT 1,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-sync_logs
-
-```sql
-CREATE TABLE sync_logs (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    operation TEXT NOT NULL, -- push, pull, full_sync
-    entity_type TEXT NOT NULL, -- products, sales, etc.
-    records_count INTEGER,
-    status TEXT DEFAULT 'pending', -- success, error
-    error_message TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-);
-```
-
-واجهات API
-
-أساسيات
-
-· Base URL: https://api.example.com/v1
-· Authentication: Bearer Token
-· Content-Type: application/json
-
-Endpoints الأساسية
-
-1. تسجيل الجهاز
-
-```http
-POST /devices/register
-```
-
-Request:
-
+### `POST /device/register`
+Registers a new POS device.
 ```json
 {
-    "device_id": "device_unique_id",
-    "store_id": "store_123",
-    "device_name": "Tablet_1"
+  "device_id": "tablet_123",
+  "user": "admin"
 }
-```
 
 Response:
 
-```json
+{ "status": "ok", "registered": true }
+
+
+---
+
+GET /products
+
+Fetch all products (for sync). Response:
+
+[
+  { "id": 1, "name": "Rice 1kg", "price": 5.00, "sku": "890123", "updated_at": "2025-09-20T12:00:00Z" }
+]
+
+
+---
+
+POST /sales
+
+Upload local sales.
+
 {
-    "success": true,
-    "device_token": "encrypted_device_token",
-    "store_info": {
-        "name": "متجر التميمي",
-        "currency": "SAR",
-        "tax_rate": 0.15
+  "sales": [
+    {
+      "id": 1001,
+      "user_id": 1,
+      "total_amount": 25.50,
+      "payment_type": "cash",
+      "items": [
+        { "product_id": 2, "qty": 1, "price": 5.00 },
+        { "product_id": 3, "qty": 2, "price": 10.25 }
+      ],
+      "created_at": "2025-09-21T14:00:00Z"
     }
+  ]
 }
-```
-
-2. جلب التحديثات
-
-```http
-POST /sync/pull
-```
-
-Request:
-
-```json
-{
-    "device_id": "device_unique_id",
-    "last_sync_at": "2024-01-15T10:30:00Z",
-    "entities": ["products", "categories"]
-}
-```
 
 Response:
 
-```json
+{ "status": "ok", "synced": 1 }
+
+
+---
+
+POST /sync
+
+Handles two-way synchronization.
+
 {
-    "success": true,
-    "data": {
-        "products": [
-            {
-                "id": 1,
-                "barcode": "6297001377784",
-                "name_ar": "أرز بسمتي",
-                "name_en": "Basmati Rice",
-                "price": 25.5,
-                "stock_quantity": 100,
-                "updated_at": "2024-01-20T08:00:00Z"
-            }
-        ],
-        "categories": [],
-        "deleted_ids": {
-            "products": [5, 8, 12]
-        }
-    }
+  "device_id": "tablet_123",
+  "last_sync": "2025-09-20T10:00:00Z"
 }
-```
-
-3. رفع المبيعات
-
-```http
-POST /sync/push
-```
-
-Request:
-
-```json
-{
-    "device_id": "device_unique_id",
-    "sales": [
-        {
-            "local_id": 123,
-            "receipt_number": "INV-001",
-            "total_amount": 150.0,
-            "items": [
-                {
-                    "product_id": 1,
-                    "quantity": 2,
-                    "unit_price": 25.5
-                }
-            ],
-            "created_at": "2024-01-20T10:15:00Z"
-        }
-    ]
-}
-```
 
 Response:
 
-```json
 {
-    "success": true,
-    "synced_ids": {
-        "sales": [456]
-    }
+  "new_products": [],
+  "updated_prices": [],
+  "sales_confirmed": [1001],
+  "server_time": "2025-09-21T14:00:00Z"
 }
-```
 
-واجهات المستخدم
 
-الشاشات الرئيسية
+---
 
-1. تسجيل الدخول
+💾 Local Storage Strategy
 
-· حقل اسم المستخدم
-· حقل كلمة المرور
-· زر تسجيل الدخول
-· تذكرني (اختياري)
-· اللغة (عربي/إنجليزي)
+Use WatermelonDB for high-performance offline storage and sync.
 
-2. لوحة التحكم
+Alternatively: SQLite (via react-native-sqlite-storage) if simpler.
 
-· إحصائيات سريعة (مبيعات اليوم، المنتجات المنتهية)
-· وصول سريع للوظائف الرئيسية
-· إشعارات المزامنة
+Maintain a local “sync status” flag per record.
 
-3. شاشة البيع (POS)
+Store local logs in device_sync_logs.
 
-· شريط البحث (نص، باركود)
-· قائمة المنتجات (صور، أسماء، أسعار، مخزون)
-· سلة المشتريات
-· تفاصيل الدفع (المجموع، الخصم، الضريبة، الإجمالي)
-· خيارات الدفع
-· زر طباعة الإيصال
 
-4. إدارة المنتجات
 
-· قائمة المنتجات مع إمكانية البحث والتصفية
-· زر إضافة منتج جديد
-· تحرير وحذف المنتجات
-· استيراد/تصدير
+---
 
-5. التقارير
+📱 UI Components (Minimum MVP)
 
-· تقرير المبيعات اليومية
-· تقرير حركة المخزون
-· تقرير المنتجات الأكثر مبيعاً
-· خيارات التصدير
+Screen	Components	Description
 
-استراتيجية المزامنة
+Login	username, password	Auth local user
+Product List	search bar, product tiles	Browse local products
+POS (Sale)	item list, quantity input, total	Build order and checkout
+Receipt	text preview, print button	Send data to printer
+Sync	button, status display	Trigger manual sync
 
-مبدأ العمل
 
-1. Offline-First: جميع العمليات تتم محلياً أولاً
-2. Queue-based Sync: العمليات تضاف إلى طابور المزامنة
-3. Conflict Resolution: Last Write Wins
-4. Incremental Sync: نقل البيانات المتغيرة فقط
 
-خوارزمية المزامنة
+---
 
-```javascript
-class SyncService {
-    async fullSync() {
-        // 1. جلب آخر التحديثات من الخادم
-        const updates = await this.pullUpdates();
-        
-        // 2. تطبيق التحديثات محلياً
-        await this.applyUpdates(updates);
-        
-        // 3. رفع البيانات المحلية غير المزامنة
-        await this.pushLocalChanges();
-        
-        // 4. تحديث حالة المزامنة
-        await this.updateSyncStatus();
-    }
-    
-    async pushLocalChanges() {
-        const pendingSales = await this.getPendingSales();
-        const pendingProducts = await this.getPendingProducts();
-        
-        // محاولة رفع البيانات مع إعادة المحاولة
-        await this.retrySync(() => 
-            this.api.pushChanges({
-                sales: pendingSales,
-                products: pendingProducts
-            })
-        );
-    }
-}
-```
+🔒 Security Notes
 
-الأمان
+Passwords are hashed using SHA-256 or bcrypt.
 
-التخزين الآمن
+Sensitive data stored in Android Keystore.
 
-· استخدام React Native Keychain/Keystore
-· تشفير البيانات الحساسة
-· تخزين آمن للتوكن
+Communication with backend uses HTTPS.
 
-أمان الاتصال
+Include token-based authentication in future sync API.
 
-· HTTPS مع pinning للشهادة
-· تجديد التوكن التلقائي
-· حماية ضد replay attacks
 
-أمان التطبيق
 
-· منع reverse engineering (ProGuard)
-· فحص integrity للتطبيق
-· إخفاء المفاتيح والبيانات الحساسة
+---
 
-الاختبار
+⚡ Build Instructions
 
-Unit Tests (Jest)
+Development
 
-```javascript
-// tests/products.test.js
-describe('Product Management', () => {
-    test('should add product to database', async () => {
-        const product = {
-            name_ar: 'تفاح',
-            price: 10.5,
-            barcode: '123456'
-        };
-        
-        const result = await ProductService.addProduct(product);
-        expect(result.id).toBeDefined();
-        expect(result.sync_status).toBe('pending');
-    });
-});
-```
+cd app
+yarn install
+yarn android
 
-E2E Tests (Detox)
+Testing
 
-```javascript
-describe('POS Flow', () => {
-    it('should complete a sale', async () => {
-        await element(by.id('search-input')).typeText('أرز');
-        await element(by.id('product-1')).tap();
-        await element(by.id('quantity-input')).typeText('2');
-        await element(by.id('add-to-cart')).tap();
-        await element(by.id('checkout-button')).tap();
-        await expect(element(by.id('receipt-screen'))).toBeVisible();
-    });
-});
-```
+yarn test
 
-النشر والتوزيع
+CI (GitHub Actions)
 
-بناء APK
+The workflow should:
 
-```bash
-# بناء Debug
-cd android && ./gradlew assembleDebug
+Install dependencies.
 
-# بناء Release
-cd android && ./gradlew assembleRelease
-```
+Build Debug APK.
 
-إعدادات CI/CD
+Upload artifact named pos-debug-apk.
 
-· GitHub Actions لبناء APK تلقائياً
-· فحص الأخطاء والاختبارات
-· توقيع APK باستخدام secrets
-· رفع إلى Play Console (اختياري)
 
-متطلبات النظام
 
-· Node.js 16+
-· React Native 0.72+
-· Android SDK
-· Java 11
+---
+
+📦 Deliverables
+
+After Jules completes the build:
+
+✅ Functional minimal POS app
+
+✅ Working offline with sample products
+
+✅ Bluetooth print mock
+
+✅ Mock backend in /server
+
+✅ ci/android-build.yml
+
+✅ Documentation (README.md + this spec)
+
+✅ Pull Request ready to merge
+
+
+
+---
+
+🧠 Notes for Jules
+
+Use actual code, not pseudocode.
+
+Prefer TypeScript if supported.
+
+Implement ProductListScreen and POSScreen first.
+
+Include 1 test file per major component.
+
+Ensure app runs offline after first sync.
