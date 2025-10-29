@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">VC POS - Aseel</string>
+    
+    <!-- Navigation -->
+    <string name="nav_pos">Point of Sale</string>
+    <string name="nav_transactions">Transactions</string>
+    <string name="nav_settings">Settings</string>
+    
+    <!-- POS Screen -->
+    <string name="cart">Cart</string>
+    <string name="total">Total</string>
+    <string name="pay">Pay</string>
+    <string name="cancel">Cancel</string>
+    <string name="hold">Hold</string>
+    <string name="search_product">Search product...</string>
+    <string name="all_products">All</string>
+    <string name="stock">Stock</string>
+    <string name="out_of_stock">Out of Stock</string>
+    
+    <!-- Payment -->
+    <string name="payment_method">Payment Method</string>
+    <string name="payment_cash">Cash</string>
+    <string name="payment_card">Card</string>
+    <string name="payment_transfer">Transfer</string>
+    
+    <!-- Transactions -->
+    <string name="transaction">Transaction</string>
+    <string name="transaction_details">Transaction Details</string>
+    <string name="date">Date</string>
+    <string name="close">Close</string>
+    
+    <!-- Settings -->
+    <string name="currency">Currency</string>
+    <string name="exchange_rate">Exchange Rate</string>
+    <string name="edit_rate">Edit Rate</string>
+    <string name="select">Select</string>
+    <string name="save">Save</string>
+    <string name="store_info">Store Information</string>
+    <string name="store_name">Store Name</string>
+    <string name="version">Version</string>
+</resources>

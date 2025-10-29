@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">نقطة البيع - الأصيل</string>
+    
+    <!-- Navigation -->
+    <string name="nav_pos">نقطة البيع</string>
+    <string name="nav_transactions">المعاملات</string>
+    <string name="nav_settings">الإعدادات</string>
+    
+    <!-- POS Screen -->
+    <string name="cart">السلة</string>
+    <string name="total">الإجمالي</string>
+    <string name="pay">دفع</string>
+    <string name="cancel">إلغاء</string>
+    <string name="hold">تعليق</string>
+    <string name="search_product">بحث عن منتج...</string>
+    <string name="all_products">الكل</string>
+    <string name="stock">المخزون</string>
+    <string name="out_of_stock">غير متوفر</string>
+    
+    <!-- Payment -->
+    <string name="payment_method">طريقة الدفع</string>
+    <string name="payment_cash">نقدي</string>
+    <string name="payment_card">بطاقة</string>
+    <string name="payment_transfer">تحويل</string>
+    
+    <!-- Transactions -->
+    <string name="transaction">معاملة</string>
+    <string name="transaction_details">تفاصيل المعاملة</string>
+    <string name="date">التاريخ</string>
+    <string name="close">إغلاق</string>
+    
+    <!-- Settings -->
+    <string name="currency">العملة</string>
+    <string name="exchange_rate">سعر الصرف</string>
+    <string name="edit_rate">تعديل السعر</string>
+    <string name="select">اختيار</string>
+    <string name="save">حفظ</string>
+    <string name="store_info">معلومات المتجر</string>
+    <string name="store_name">اسم المتجر</string>
+    <string name="version">الإصدار</string>
+</resources>
