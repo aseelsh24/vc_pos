@@ -24,7 +24,11 @@ data class Product(
     val nameAr: String,
     val nameEn: String? = null,
     val priceBase: Double, // Base price in YER
-    val stockQty: Int = 0,
+    val quantity_in_stock: Int = 0,
     val imagePath: String? = null,
     val categoryId: Long? = null
-)
+) {
+    init {
+        require(quantity_in_stock >= 0) { "Quantity in stock cannot be negative" }
+    }
+}

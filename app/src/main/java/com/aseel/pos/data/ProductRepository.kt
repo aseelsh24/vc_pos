@@ -26,6 +26,14 @@ class ProductRepository @Inject constructor(
         return productDao.decrementStock(productId, qty) > 0
     }
     
+    suspend fun incrementStock(productId: Long, qty: Int): Boolean {
+        return productDao.incrementStock(productId, qty) > 0
+    }
+    
+    suspend fun setStockQuantity(productId: Long, quantity: Int): Boolean {
+        return productDao.setStockQuantity(productId, quantity) > 0
+    }
+    
     fun getAllCategories(): Flow<List<Category>> = categoryDao.getAllCategories()
     
     suspend fun getCategoryById(id: Long): Category? = categoryDao.getCategoryById(id)

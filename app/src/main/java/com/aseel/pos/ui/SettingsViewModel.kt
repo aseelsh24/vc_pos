@@ -31,4 +31,10 @@ class SettingsViewModel @Inject constructor(
             settingsRepository.updateExchangeRate(currencyCode, rate)
         }
     }
+    
+    fun updateBarcodeScannerEnabled(enabled: Boolean) {
+        viewModelScope.launch {
+            settingsRepository.updateBarcodeScannerEnabled(enabled)
+        }
+    }
 }

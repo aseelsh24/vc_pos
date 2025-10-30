@@ -95,6 +95,18 @@ dependencies {
     implementation("androidx.datastore:datastore:1.1.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.7.3")
 
+    // WindowSizeClass for adaptive layouts
+    implementation("androidx.compose.material3:material3-window-size-class")
+
+    // Barcode scanning
+    implementation("com.journeyapps:zxing-android-embedded:4.3.0")
+    implementation("androidx.camera:camera-camera2:1.4.0-alpha11")
+    implementation("androidx.camera:camera-lifecycle:1.4.0-alpha11")
+    implementation("androidx.camera:camera-view:1.4.0-alpha11")
+
+    // ESC/POS Thermal Printer
+    implementation("com.github.DantSu:ESCPOS-ThermalPrinter-Android:3.3.0")
+
     // Testing
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.robolectric:robolectric:4.13")

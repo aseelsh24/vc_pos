@@ -17,6 +17,9 @@ import com.aseel.pos.ui.SettingsViewModel
 @Composable
 fun SettingsScreen(
     onNavigateBack: () -> Unit,
+    onNavigateToProductManagement: () -> Unit = {},
+    onNavigateToInventoryReports: () -> Unit = {},
+    onNavigateToTransactions: () -> Unit = {},
     viewModel: SettingsViewModel = hiltViewModel()
 ) {
     val settings by viewModel.settings.collectAsState()
@@ -89,6 +92,114 @@ fun SettingsScreen(
                                     Text("اختيار")
                                 }
                             }
+                        }
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            Text(
+                text = "الميزات",
+                style = MaterialTheme.typography.headlineSmall
+            )
+            
+            // Barcode Scanner Toggle
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = androidx.compose.ui.Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "ماسح الباركود",
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(
+                                text = "تفعيل مسح الباركود لإضافة المنتجات تلقائياً",
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                        Switch(
+                            checked = settings.enableBarcodeScanner,
+                            onCheckedChange = { viewModel.updateBarcodeScannerEnabled(it) },
+                            modifier = Modifier.semantics {
+                                contentDescription = if (settings.enableBarcodeScanner) {
+                                    "إيقاف ماسح الباركود"
+                                } else {
+                                    "تفعيل ماسح الباركود"
+                                }
+                            }
+                        )
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Product Management Navigation
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "إدارة المنتجات",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "إدارة المنتجات والمخزون",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Button(
+                        onClick = onNavigateToProductManagement,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text("فتح إدارة المنتجات")
+                    }
+                }
+            }
+            
+            Spacer(modifier = Modifier.height(16.dp))
+            
+            // Inventory Reports Navigation
+            Card(
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Column(
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    Text(
+                        text = "تقارير المخزون",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = "عرض تقارير مفصلة عن المخزون والمبيعات",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Spacer(modifier = Modifier.height(12.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        Button(
+                            onClick = onNavigateToInventoryReports,
+                            modifier = Modifier.weight(1f)
+                        ) {
+                            Text("عرض التقارير")
                         }
                     }
                 }
