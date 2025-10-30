@@ -63,4 +63,8 @@ class SettingsRepository(private val dataStore: DataStore<PosSettings>) {
             it.copy(exchangeRates = it.exchangeRates.copy(rates = newRates))
         }
     }
+    
+    suspend fun updateBarcodeScannerEnabled(enabled: Boolean) {
+        dataStore.updateData { it.copy(enableBarcodeScanner = enabled) }
+    }
 }

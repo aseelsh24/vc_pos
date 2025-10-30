@@ -11,5 +11,6 @@ data class PosSettings(
     val taxIncluded: Boolean = false,
     val taxRate: Double = 0.0,
     val storeName: String = "متجر الأصيل",
-    val storeNameEn: String = "Aseel Store"
+    val storeNameEn: String = "Aseel Store",
+    val enableBarcodeScanner: Boolean = false
 )

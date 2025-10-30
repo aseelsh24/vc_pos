@@ -43,10 +43,16 @@ fun PosScreen(
             TopAppBar(
                 title = { Text("نقطة البيع") },
                 actions = {
-                    IconButton(onClick = onNavigateToTransactions) {
+                    IconButton(
+                        onClick = onNavigateToTransactions,
+                        modifier = Modifier.size(56.dp) // Ensure 48dp minimum touch target
+                    ) {
                         Icon(Icons.Default.Receipt, "المعاملات")
                     }
-                    IconButton(onClick = onNavigateToSettings) {
+                    IconButton(
+                        onClick = onNavigateToSettings,
+                        modifier = Modifier.size(56.dp) // Ensure 48dp minimum touch target
+                    ) {
                         Icon(Icons.Default.Settings, "الإعدادات")
                     }
                 }
@@ -225,7 +231,10 @@ fun CartItemCard(
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
-                IconButton(onClick = onRemove) {
+                IconButton(
+                    onClick = onRemove,
+                    modifier = Modifier.size(56.dp) // Ensure 48dp minimum touch target
+                ) {
                     Icon(Icons.Default.Delete, "حذف")
                 }
             }
@@ -236,7 +245,10 @@ fun CartItemCard(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    IconButton(onClick = onDecrement) {
+                    IconButton(
+                        onClick = onDecrement,
+                        modifier = Modifier.size(56.dp) // Ensure 48dp minimum touch target
+                    ) {
                         Icon(Icons.Default.Remove, "تقليل")
                     }
                     Text(
@@ -244,7 +256,10 @@ fun CartItemCard(
                         style = MaterialTheme.typography.titleMedium,
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
-                    IconButton(onClick = onIncrement) {
+                    IconButton(
+                        onClick = onIncrement,
+                        modifier = Modifier.size(56.dp) // Ensure 48dp minimum touch target
+                    ) {
                         Icon(Icons.Default.Add, "زيادة")
                     }
                 }

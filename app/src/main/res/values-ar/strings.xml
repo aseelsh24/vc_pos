@@ -39,4 +39,14 @@
     <string name="store_info">معلومات المتجر</string>
     <string name="store_name">اسم المتجر</string>
     <string name="version">الإصدار</string>
+    
+    <!-- Inventory -->
+    <string name="inventory_reports">تقارير المخزون</string>
+    <string name="inventory_reports_description">عرض تقارير مفصلة عن المخزون والمبيعات</string>
+    <string name="view_reports">عرض التقارير</string>
+    <string name="product_management">إدارة المنتجات</string>
+    <string name="product_management_description">إدارة المنتجات والمخزون</string>
+    <string name="open_product_management">فتح إدارة المنتجات</string>
+    <string name="low_stock_alert">تنبيه: %d منتج بمخزون منخفض</string>
+    <string name="all_products_in_stock">جميع المنتجات لديها مخزون كافي</string>
 </resources>
